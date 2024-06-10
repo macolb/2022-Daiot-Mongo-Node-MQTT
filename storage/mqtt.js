@@ -1,5 +1,6 @@
 var mqtt = require('mqtt');
 const config = require("./../config");
+const fs = require('fs');
 
 const MQTT_ENV = config.services.MQTT;
 
@@ -10,13 +11,15 @@ var options = {
     password: MQTT_ENV.PASSWORD,
     qos: 2,
     port: MQTT_ENV.PORT,
-    clean: true
+    clean: true,
+    key: fs.readFileSync('./certs/client.key'), // Ruta al archivo de clave privada
+    cert: fs.readFileSync('./certs/client.crt'), // Ruta al archivo de certificado
+    ca: fs.readFileSync('./certs/ca.crt') // Ruta al archivo de certificado de la CA    
 }
 
 //const URI = `mqtt://${MQTT_ENV.HOST}`; // Para utilizar sin TLS
 const URI = `mqtts://${MQTT_ENV.HOST}`; // Utiliza "mqtts" en lugar de "mqtt" para la conexión segura
 console.log("MQTT:" + URI);
-
 
 
 const client = mqtt.connect(URI, options);
